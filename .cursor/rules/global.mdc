@@ -1,0 +1,171 @@
+---
+description: Global backend rules and architecture guidelines for the ecommerce API project.
+globs:
+  - "**/*"
+alwaysApply: true
+---
+You are a Node.js expert. Write clean, readable, and simple code. Prioritize code readability over reducing lines of code.
+
+Use Clean Architecture to ensure the codebase is scalable, maintainable, and easy to extend in the future.
+
+The goal of this backend is to create an API for an ecommerce platform that sells clothing for adults and children. 
+
+The system should allow managing:
+
+- users
+- products
+- product characteristics (filters)
+- orders
+- shopping cart
+- user addresses
+- support requests
+- payments
+
+The system should support advanced filtering such as:
+
+- brands
+- colors
+- sizes
+- stock
+- tags
+- materials
+- discounts
+- categories
+
+Use Prisma ORM with PostgreSQL as the database.
+
+Use JWT for authentication. There must be two different authentication flows:
+- Admin authentication
+- User authentication
+
+Use Docker to run the PostgreSQL database.
+
+Use TypeScript with strict typing to avoid errors.
+
+Use Winston for logging errors and application events. Create transports for:
+- PostgreSQL
+- Console
+- File logs (error.log, info.log, combined.log)
+
+Prioritize the use of classes and interfaces.
+
+Use datasource and repository patterns to ensure clean code and allow switching data sources easily.
+
+Prefer destructuring variables whenever possible to improve readability and maintain cleaner, more maintainable code.
+
+IMPORTANT:
+Files like `category.*.ts` shown below are only examples. They represent:
+- Example locations
+- Example naming conventions
+- Example entity structure
+
+
+You should replicate this structure for other entities such as:
+- product
+- user
+- cart
+- order
+- brand
+- category
+- etc.
+
+Use this directory structure:
+
+src
+ ├── config
+ │   └── adapters for third-party implementations:
+ │       - uuid
+ │       - jwt
+ │       - winston
+ │       - bcrypt
+ │
+ ├── data
+ │   ├── postgres
+ │   │   ├── models
+ │   │   │   └── category.model.ts (example)
+ │   │   └── postgres-database.ts
+ │   │
+ │   └── seed
+ │       ├── seed.ts (called with npm run seed)
+ │       └── data.ts (data to be seeded)
+ │
+ ├── domain
+ │   ├── datasources
+ │   │   └── category.datasource.ts (example)
+ │   │
+ │   ├── dtos
+ │   │   └── category
+ │   │       └── create-category.dto.ts (example)
+ │   │
+ │   ├── entities
+ │   │   └── category.entity.ts (example)
+ │   │
+ │   ├── interfaces
+ │   │   └── logger.interface.ts (example)
+ │   │
+ │   ├── repositories
+ │   │   └── category.repository.ts (example)
+ │   │
+ │   └── types
+ │       └── role.type.ts (example)
+ │
+ ├── infrastructure
+ │   ├── datasources
+ │   │   └── category-postgres.datasource.impl.ts (example)
+ │   │
+ │   └── repositories
+ │       └── category.repository.impl.ts (example)
+ │
+ ├── presentation
+ │   ├── middlewares
+ │   │   └── auth.middleware.ts (example)
+ │   │
+ │   ├── category (example)
+ │   │   ├── controller.ts (example)
+ │   │   └── routes.ts (example)
+ │   │
+ │   └── server.ts
+ │
+ └── app.ts
+
+Outside src folder:
+
+- .env
+- .env.template
+- .gitignore
+- docker-compose.yml
+- error.log
+- info.log
+- combined.log
+
+Create a utils folder if necessary. The location is up to you.
+
+Search results must support:
+- filtering
+- pagination
+- sorting (when applicable)
+
+User behavior:
+
+Guests (not authenticated) can:
+- view products
+- view categories
+- search products
+- apply filters
+
+Authenticated users can:
+- add products to cart
+- manage shopping cart
+- purchase products
+
+Follow best practices:
+
+- Use environment variables
+- Use DTOs
+- Use repository pattern
+- Use services / use-cases
+- Handle errors properly
+- Validate requests
+- Use proper folder structure
+- Use dependency injection
+- Use SOLID principles

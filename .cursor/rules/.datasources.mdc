@@ -1,0 +1,14 @@
+---
+globs: src/domain/datasources/**/*.datasource.ts,src/infrastructure/datasources/**/*.datasource.impl.ts
+alwaysApply: false
+---
+Define a datasource as an abstract class in the domain layer that outlines the CRUD method structure. Methods should return entities and receive DTOs as parameters when necessary. When pagination is required, define a dedicated interface that includes both pagination metadata and the corresponding entity data.
+
+The datasource definition must live in the domain layer, while its concrete implementation must be placed in the infrastructure layer.
+
+Use the following naming convention:
+
+Domain: category.datasource.ts
+Infrastructure: category-prisma.datasource.impl.ts (implements CategoryDatasource)
+
+This pattern enforces a clear separation of concerns and keeps the domain layer independent from infrastructure details.

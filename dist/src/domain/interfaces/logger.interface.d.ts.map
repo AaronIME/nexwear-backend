@@ -1,0 +1,1 @@
+{"version":3,"file":"logger.interface.d.ts","sourceRoot":"","sources":["../../../../src/domain/interfaces/logger.interface.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,OAAO;IACtB,IAAI,CAAC,OAAO,EAAE,MAAM,GAAG,IAAI,CAAC;IAC5B,KAAK,CAAC,OAAO,EAAE,MAAM,GAAG,IAAI,CAAC;CAC9B"}

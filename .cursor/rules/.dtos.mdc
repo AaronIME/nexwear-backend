@@ -1,0 +1,81 @@
+---
+globs: src/domain/dtos/**/*.dto.ts
+alwaysApply: false
+---
+Define DTOs as objects received either from the request body or request params. DTOs are responsible for validating that required fields are present and that they follow the expected format when necessary.
+
+Naming Convention
+
+DTOs should follow this naming pattern:
+
+Class name: CreateUserDto
+File name: create-user.dto.ts
+
+Format:
+<crud-action>-<entity>.dto.ts
+
+Examples:
+
+create-user.dto.ts
+update-category.dto.ts
+get-post.dto.ts
+Structure
+
+Each DTO should define a constructor with readonly properties:
+
+`constructor(
+  public readonly name: string,
+  public readonly email: string,
+  public readonly password: string,
+  public readonly role: Role,
+  public readonly status: Status,
+  public readonly description: string
+) {}`
+
+Validation Method
+
+DTOs must include a static create method that receives a generic object and returns a tuple containing an optional error message or a DTO instance:
+
+`public static create(object: {
+  [key: string]: any;
+}): [string | undefined, CreateUserDto?] {
+
+  const { name, email, password, role, status, description } = object;
+
+  if (!name) {
+    return ["Name property is required"];
+  }
+
+  if (!email) {
+    return ["Email property is required"];
+  }
+
+  if (!emailRegex.test(email)) {
+    return ["Email property has invalid format"];
+  }
+
+  if (!password) {
+    return ["Password property is required"];
+  }
+
+  if (password < 6) {
+    return ["Password must be at least 6 characters"];
+  }
+
+  if (!role) {
+    return ["Role property is required"];
+  }
+
+  if (!status) {
+    return ["Status property is required"];
+  }
+
+  if (!description) {
+    return ["Description property is required"];
+  }
+
+  return [
+    undefined,
+    new CreateUserDto(name, email, password, role, status, description)
+  ];
+}`

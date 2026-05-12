@@ -1,0 +1,11 @@
+---
+globs: src/config/handle-error.ts,src/presentation/**/controller.ts
+alwaysApply: false
+---
+Define controllers as classes that implement repository operations. Each controller must receive its corresponding repository as a constructor parameter and define one method per repository function.
+
+Make functions public.
+
+Controllers should avoid using async/await and instead handle promises using .then() and .catch(). On success, return the function response with a 200 status code. On error, delegate handling to a dedicated error handler function.
+
+The error handler must receive response and error as parameters. If the error is a custom error, return its status code and message. Otherwise, return a 500 status code with a generic error message.

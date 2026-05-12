@@ -1,0 +1,35 @@
+---
+globs: src/domain/dtos/pagination/pagination.dto.ts,src/domain/datasources/**/*.datasource.ts,src/infrastructure/datasources/**/*.datasource.impl.ts,src/domain/repositories/**/*.repository.ts,src/infrastructure/repositories/**/*.repository.impl.ts
+alwaysApply: false
+---
+For datasource methods that support pagination, create a dedicated DTO to receive pagination parameters such as **page** and **limit**, along with any optional filters.
+
+Additional filters should be provided through a separate DTO as a second parameter when necessary.
+
+The return value must include pagination metadata, the resulting entities, and any applied filters. If filters are provided, they should also be reflected in the response.
+
+For datasource methods that support pagination, create a dedicated DTO to receive pagination parameters such as page and limit, along with any optional filters.
+
+The return value must include pagination metadata, the resulting entities, and any applied filters. If filters are provided, they should also be reflected in the response.
+
+Example return structure:
+
+return {
+  page, // required
+  limit, // required
+  total, // required
+  pages, // required
+  posts: foundPosts, // required (entity example)
+
+  // optional filters
+  query: query || undefined,
+  category: selectedCategory?.name || undefined,
+  categoryDescription: selectedCategory?.description || undefined,
+
+  // navigation
+  next: `api/posts?page=${page + 1}&limit=${limit}${category ? "&category=" + category : ""}`, // required
+  prev:
+    page - 1 > 0
+      ? `api/posts?page=${page - 1}&limit=${limit}${category ? "&category=" + category : ""}`
+      : undefined // required
+};

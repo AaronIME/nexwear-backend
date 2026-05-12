@@ -1,0 +1,405 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────
+
+enum Gender {
+  MEN
+  WOMEN
+  UNISEX
+  KIDS
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PAYPAL
+  BANK_TRANSFER
+}
+
+enum SupportStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+// ─────────────────────────────────────────────
+// User
+// ─────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  addresses       UserAddress[]
+  cart            Cart?
+  orders          Order[]
+  supportRequests SupportRequest[]
+  reviews         Review[]
+  isActive Boolean @default(true) @map("is_active")
+  isDeleted Boolean @default(false) @map("is_deleted")
+
+  @@map("users")
+}
+
+model UserAddress {
+  id         String  @id @default(uuid())
+  userId     String  @map("user_id")
+  street     String
+  city       String
+  state      String
+  country    String
+  postalCode String  @map("postal_code")
+  isDefault  Boolean @default(false) @map("is_default")
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_addresses")
+}
+
+// ─────────────────────────────────────────────
+// Catalog
+// ─────────────────────────────────────────────
+
+model Brand {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  products Product[]
+
+  @@map("brands")
+}
+
+model Category {
+  id       String @id @default(uuid())
+  name     String @unique
+  products Product[]
+
+  @@map("categories")
+}
+
+model Color {
+  id       String           @id @default(uuid())
+  name     String           @unique
+  hex      String           @unique
+  variants ProductVariant[]
+
+  @@map("colors")
+}
+
+model Size {
+  id       String           @id @default(uuid())
+  name     String           @unique
+  variants ProductVariant[]
+
+  @@map("sizes")
+}
+
+model Material {
+  id       String            @id @default(uuid())
+  name     String            @unique
+  products ProductMaterial[]
+
+  @@map("materials")
+}
+
+model Tag {
+  id       String       @id @default(uuid())
+  name     String       @unique
+  products ProductTag[]
+
+  @@map("tags")
+}
+
+model Discount {
+  id         String    @id @default(uuid())
+  name       String    @unique
+  percentage Float
+  startDate  DateTime  @map("start_date")
+  endDate    DateTime  @map("end_date")
+  products   Product[]
+
+  @@map("discounts")
+}
+
+// ─────────────────────────────────────────────
+// Product
+// ─────────────────────────────────────────────
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  brandId     String?  @map("brand_id")
+  categoryId  String?  @map("category_id")
+  gender      Gender   @default(UNISEX)
+  discountId  String?  @map("discount_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  averageRating Float @default(0) @map("average_rating")
+  reviewCount   Int   @default(0) @map("review_count")
+  ratingSum     Int   @default(0) @map("rating_sum")
+  soldCount     Int   @default(0) @map("sold_count")
+
+  brand    Brand?    @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  discount Discount? @relation(fields: [discountId], references: [id], onDelete: SetNull)
+
+  variants  ProductVariant[]
+  images    ProductImage[]
+  tags      ProductTag[]
+  materials ProductMaterial[]
+  reviews   Review[]
+  isDeleted Boolean @default(false) @map("is_deleted")
+  isActive Boolean @default(true) @map("is_active")
+
+  @@map("products")
+}
+
+model ProductVariant {
+  id        String  @id @default(uuid())
+  productId String  @map("product_id")
+  colorId   String? @map("color_id")
+  sizeId    String? @map("size_id")
+  stock     Int     @default(0)
+  sku       String  @unique
+  price     Float?
+
+  soldCount Int @default(0) @map("sold_count")
+
+  product   Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
+  color     Color?                @relation(fields: [colorId], references: [id])
+  size      Size?                 @relation(fields: [sizeId], references: [id])
+  cartItems CartItem[]
+  images    ProductVariantImage[]
+  isActive Boolean @default(true) @map("is_active")
+  isDeleted Boolean @default(false) @map("is_deleted")
+
+  @@map("product_variants")
+}
+
+model ProductImage {
+  id        String @id @default(uuid())
+  productId String @map("product_id")
+  url       String
+  order     Int    @default(0)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model ProductVariantImage {
+  id               String @id @default(uuid())
+  productVariantId String @map("product_variant_id")
+  url              String
+  order            Int    @default(0)
+
+  productVariant ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+
+  @@map("product_variant_images")
+}
+
+model ProductTag {
+  productId String @map("product_id")
+  tagId     String @map("tag_id")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([productId, tagId])
+  @@map("product_tags")
+}
+
+model ProductMaterial {
+  productId  String @map("product_id")
+  materialId String @map("material_id")
+
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@id([productId, materialId])
+  @@map("product_materials")
+}
+
+// ─────────────────────────────────────────────
+// Cart
+// ─────────────────────────────────────────────
+
+model Cart {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id               String @id @default(uuid())
+  cartId           String @map("cart_id")
+  productVariantId String @map("product_variant_id")
+  quantity         Int    @default(1)
+
+  cart           Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productVariant ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+
+  @@map("cart_items")
+}
+
+// ─────────────────────────────────────────────
+// Orders
+// ─────────────────────────────────────────────
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String      @map("user_id")
+
+  street    String
+  city      String
+  state     String
+  country   String
+  postalCode String
+
+  subtotal Float
+  tax Float
+  discount Float
+  shipping Float
+  total     Float
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  user    User        @relation(fields: [userId], references: [id])
+  items   OrderItem[]
+  payment Payment?
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id               String @id @default(uuid())
+  orderId          String @map("order_id")
+  productId        String? @map("product_id")
+  productVariantId String? @map("product_variant_id")
+  imageUrl         String @map("image_url")
+  colorName        String @map("color_name")
+  sizeName         String @map("size_name")
+  productName      String @map("product_name")
+  quantity         Int
+  price            Float
+  order          Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
+}
+
+// ─────────────────────────────────────────────
+// Payments
+// ─────────────────────────────────────────────
+
+model Payment {
+  id            String        @id @default(uuid())
+  orderId       String        @unique @map("order_id")
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+  amount        Float
+  transactionId String?       @unique @map("transaction_id")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+// ─────────────────────────────────────────────
+// Support
+// ─────────────────────────────────────────────
+
+model SupportRequest {
+  id        String        @id @default(uuid())
+  userId    String        @map("user_id")
+  subject   String
+  message   String
+  status    SupportStatus @default(OPEN)
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("support_requests")
+}
+
+// ─────────────────────────────────────────────
+// Logs
+// ─────────────────────────────────────────────
+
+enum LogLevel {
+  INFO
+  ERROR
+  WARN
+  DEBUG
+}
+
+model Log {
+  id        String   @id @default(uuid())
+  level     LogLevel
+  message   String
+  service   String
+  timestamp DateTime @default(now())
+
+  @@map("logs")
+}
+
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  productId String   @map("product_id")
+
+  score     Int
+  comment   String?
+
+  isVisible Boolean  @default(true) @map("is_visible")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("reviews")
+}

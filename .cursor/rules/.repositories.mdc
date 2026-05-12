@@ -1,0 +1,16 @@
+---
+globs: src/domain/repositories/**/*.repository.ts,src/infrastructure/repositories/**/*.repository.impl.ts
+alwaysApply: false
+---
+Define repositories as abstract classes in the **domain layer** that describe business-oriented CRUD operations. Repository methods must return **entities** and receive **DTOs** as parameters when necessary.
+
+The repository definition must live in the **domain layer**, while its concrete implementation must be placed in the **infrastructure layer**. Repository implementations should rely on **datasources** to retrieve and persist data.
+
+Repository implementations must define a constructor that receives the required datasource dependencies. Method signatures in the repository implementation must match those defined in the repository abstraction and datasource.
+
+Use the following naming convention:
+
+- **Domain:** `category.repository.ts`
+- **Infrastructure:** `category.repository.impl.ts` (implements `CategoryRepository`)
+
+This pattern enforces separation of concerns, keeps business logic within the domain layer, and ensures repositories remain independent from infrastructure details.

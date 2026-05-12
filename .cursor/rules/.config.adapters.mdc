@@ -1,0 +1,102 @@
+---
+globs: src/config/adapters/**/*.adapter.ts
+alwaysApply: false
+---
+# Adapters
+
+Define adapters to implement third-party libraries in order to centralize functionality in a single place and avoid repeating the same code across the codebase.
+
+Adapters also make it easier to:
+- Replace libraries in the future
+- Improve testability
+- Maintain consistency across the application
+
+Adapters can be implemented in different ways:
+- Exported variables
+- Exported objects with functions
+- Static classes
+
+- Always use adapters instead of directly importing third-party libraries
+- Keep adapters small and focused
+- Avoid business logic inside adapters
+- Adapters should only wrap external libraries
+- Place adapters inside the infrastructure/adapters directory
+
+## Environment Adapter
+
+`
+export const envs = {
+  PORT: get("PORT").required().asPortNumber()
+};
+`
+
+`
+export class JwtAdapter {
+  static generateToken = (
+    payload: any,
+    duration: StringValue = "2h",
+  ): Promise<string | null> => {
+    return new Promise((resolve) => {
+      jwt.sign(payload, JWT_SEED, { expiresIn: duration }, (error, token) => {
+        if (error) resolve(null);
+
+        resolve(token!);
+      });
+    });
+  };
+
+  static validateToken = <T>(token: string):Promise <T|null> => {
+    return new Promise((resolve) => {
+      jwt.verify(token, JWT_SEED, (error, decoded) => {
+        if(error) resolve(null);
+
+        resolve(decoded as T)
+      } );
+    });
+  };
+}
+`
+
+`
+export const bcryptAdapter = {
+
+    hash: (password: string)  => {
+        const salt = genSaltSync();
+        return hashSync(password, salt);
+    },
+
+    compare: (password: string, hashed: string) => {
+        return compareSync(password, hashed);
+    }
+}
+`
+
+`
+const logger = winston.createLogger({
+  format: combine( timestamp(), json()),
+  transports: [
+    new winston.transports.Console(),
+    new MongoTransport(logRepository, {}),
+    new winston.transports.File({ filename: "info.log", level: "info" }),
+    new winston.transports.File({ filename: "error.log", level: "error" }),
+    new winston.transports.File({ filename: "combined.log" }),
+  ],
+});
+
+export const buildLogger = (service: string) => {
+    return {
+
+        info: (message: string) => {
+            logger.log('info', {
+                service, message
+            })
+        },
+
+        error: (message: string) => {
+            logger.log('error', {
+                service, message
+            })
+        }
+    }
+}
+`

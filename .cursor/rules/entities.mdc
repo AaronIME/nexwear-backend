@@ -1,0 +1,65 @@
+---
+globs: src/domain/entities/**/*.entity.ts
+alwaysApply: false
+---
+Create domain entities following these rules:
+
+Entities must be implemented as classes.
+All properties must be defined in the constructor.
+Entities must include a static fromObject method.
+
+The fromObject method must:
+
+Receive a plain object as parameter
+Extract properties using destructuring
+Support both id and _id fields
+Validate required fields
+Throw domain errors when validation fails
+Return a new instance of the entity
+
+Use strict typing and avoid any when possible.
+Optional properties must be defined using ?.
+Use readonly properties when possible to avoid mutations.
+
+Entities must:
+
+Be framework agnostic
+Not depend on infrastructure
+Contain only validation logic
+Be simple and readable
+
+Use the following format as reference:
+
+export class CategoryEntity{
+
+    constructor(
+        public id: String,
+        public name: String,
+        public description: String,
+        public slug: String,
+        public lastPost?: PostEntity,
+        public totalPosts?: number
+    ){}
+
+    static fromObject = (object: {[key: string]: any}) => {
+        const { id, _id, name, description, slug, lastPost, totalPosts = 0} = object;
+
+        if(!id || !_id) {
+            CustomError.badRequest("Category id missing");
+        }
+
+        if(!name){
+            CustomError.badRequest("Category name invalid");
+        }
+
+        if(!description){
+            CustomError.badRequest("Category description invalid");
+        }
+
+        if(!slug){
+            CustomError.badRequest("Category slug invalid");
+        }
+
+        return new CategoryEntity(id || _id, name, description, slug, lastPost, totalPosts);
+    }
+}

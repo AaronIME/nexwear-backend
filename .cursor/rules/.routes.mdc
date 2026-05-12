@@ -1,0 +1,10 @@
+---
+globs: src/presentation/**/routes.ts
+alwaysApply: true
+---
+
+Define routes as a class, with one route per controller method. Inside the routes definition, instantiate the datasource, repository, and controller.
+
+Configure the database using PrismaClient with the POSTGRES_URL from envs, and create a Prisma adapter (e.g., PrismaPG) to handle database interactions.
+
+The routes class must expose a static method named routes that returns the configured routes.
