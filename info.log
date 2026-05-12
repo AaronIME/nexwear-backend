@@ -291,3 +291,5 @@
 {"level":"error","message":"getByUserId - Error: Cart for user \"user_1\" not found","service":"CartController","timestamp":"2026-05-11T19:49:15.635Z"}
 {"level":"error","message":"checkAuth - Error: Invalid Bearer Token","service":"AuthController","timestamp":"2026-05-11T22:25:20.269Z"}
 {"level":"error","message":"checkAuth - Error: Invalid Bearer Token","service":"AuthController","timestamp":"2026-05-11T22:25:20.280Z"}
+{"level":"error","message":"getByUserId - Error: Cart for user \"user_1\" not found","service":"CartController","timestamp":"2026-05-12T00:01:26.469Z"}
+{"level":"error","message":"getByUserId - Error: Cart for user \"user_1\" not found","service":"CartController","timestamp":"2026-05-12T00:01:27.522Z"}
