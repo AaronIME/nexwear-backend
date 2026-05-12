@@ -321,6 +321,3 @@ npm run build
 npm run start
 ```
 
----
-
-¿Dudas sobre un endpoint concreto? Revisa el controlador y el DTO correspondiente en `src/presentation/<recurso>/` y `src/domain/dtos/`.
