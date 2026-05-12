@@ -38,3 +38,7 @@ Thumbs.db
 .cache/
 .tmp/
 temp/
+
+error.log
+info.log
+combined.log
