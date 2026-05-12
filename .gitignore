@@ -42,3 +42,6 @@ temp/
 error.log
 info.log
 combined.log
+
+dist/src
+dist/generated

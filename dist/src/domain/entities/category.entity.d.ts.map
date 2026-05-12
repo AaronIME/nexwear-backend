@@ -1,1 +1,0 @@
-{"version":3,"file":"category.entity.d.ts","sourceRoot":"","sources":["../../../../src/domain/entities/category.entity.ts"],"names":[],"mappings":"AAEA,qBAAa,cAAc;aAEP,EAAE,EAAE,MAAM;aACV,IAAI,EAAE,MAAM;gBADZ,EAAE,EAAE,MAAM,EACV,IAAI,EAAE,MAAM;IAG9B,MAAM,CAAC,UAAU,CAAC,MAAM,EAAE;QAAE,CAAC,GAAG,EAAE,MAAM,GAAG,GAAG,CAAA;KAAE,GAAG,cAAc;CAQlE"}

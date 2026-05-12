@@ -1,1 +1,0 @@
-{"version":3,"file":"create-size.dto.d.ts","sourceRoot":"","sources":["../../../../../src/domain/dtos/size/create-size.dto.ts"],"names":[],"mappings":"AAAA,qBAAa,aAAa;aACI,IAAI,EAAE,MAAM;gBAAZ,IAAI,EAAE,MAAM;IAExC,MAAM,CAAC,MAAM,CAAC,MAAM,EAAE;QAAE,CAAC,GAAG,EAAE,MAAM,GAAG,GAAG,CAAA;KAAE,GAAG,CAAC,MAAM,GAAG,SAAS,EAAE,aAAa,CAAC,CAAC;CAQpF"}
